@@ -357,7 +357,7 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"DC Motor Controller", None))
         self.groupBox_3.setTitle(QCoreApplication.translate("MainWindow", u"Preset Duty Cycle Values", None))
         self.radioButton_22.setText(QCoreApplication.translate("MainWindow", u"0", None))
         self.radioButton_23.setText(QCoreApplication.translate("MainWindow", u"25", None))
