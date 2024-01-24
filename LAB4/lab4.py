@@ -9,6 +9,7 @@ motorA_direction = -1
 motorA_preset = 0
 '''
 Parameters to be send to pico
+
 motorA_off, motorA_on : 1 or 0
 motorA_direction : 1 (cw) or 0(ccw)
 motorA_dutyCycle : 0 to 65536
@@ -53,6 +54,7 @@ class Ui_MainWindow(object):
         self.textBrowser_2.append(f'motorA_dutyCycle : {motorA_dutyCycle}\n')
     
     def motorA_presetDutyCycle_routine(self):
+        global motorA_dutyCycle
         if self.radioButton_22.isChecked():
             motorA_dutyCycle = 0
         elif self.radioButton_23.isChecked():
@@ -108,6 +110,7 @@ class Ui_MainWindow(object):
         self.textBrowser.append(f'motorB_dutyCycle : {motorB_dutyCycle}\n')
     
     def motorB_presetDutyCycle_routine(self):
+        global motorB_dutyCycle
         if self.radioButton_17.isChecked():
             motorB_dutyCycle = 0
         elif self.radioButton_18.isChecked():
