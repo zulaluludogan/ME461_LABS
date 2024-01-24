@@ -2,7 +2,12 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 import sys
+'''
+2 parameters to be send to pico
 
+servo_position: 0-65536 input to analog pin 
+release_motor: 0 or 1 motor to be released
+'''
 class Ui_MainWindow(object):
     def preset_servoPosition(self):
         global servo_position
@@ -24,6 +29,7 @@ class Ui_MainWindow(object):
         print(release_motor)
     
     def set_servoPosition(self):
+        global servo_position
         servo_position = int(self.horizontalSlider.value()*65536/100)
         self.lcdNumber.display(int(servo_position/65536*180))
         print(servo_position)

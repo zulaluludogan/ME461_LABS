@@ -7,7 +7,18 @@ motorA_on = 0
 motorA_off  = 0
 motorA_direction = -1
 motorA_preset = 0
+'''
+Parameters to be send to pico
+motorA_off, motorA_on : 1 or 0
+motorA_direction : 1 (cw) or 0(ccw)
+motorA_dutyCycle : 0 to 65536
+motorA_pwmFreq : 1 Hz to 1kHz
 
+motorB_off, motorB_on : 1 or 0
+motorB_direction : 1 (cw) or 0(ccw)
+motorB_dutyCycle : 0 to 65536
+motorB_pwmFreq : 1 Hz to 1kHz
+'''
 class Ui_MainWindow(object):
     #### FUNCTIONS MOTOR A
     def startA_routine(self):
