@@ -22,17 +22,19 @@ motorB_pwmFreq : 1 Hz to 1kHz
 class Ui_MainWindow(object):
     #### FUNCTIONS MOTOR A
     def startA_routine(self):
-            global motorA_on, motorA_off
-            if self.radioButton_28.isChecked() or self.radioButton_27.isChecked():
-                motorA_off = 0
-                motorA_on = 1
-                print("start")
+        global motorA_on, motorA_off
+        if self.radioButton_28.isChecked() or self.radioButton_27.isChecked():
+            motorA_off = 0
+            motorA_on = 1
+            self.textBrowser_2.append(f'motorA_on : {motorA_on}')
+            self.textBrowser_2.append(f'motorA_off : {motorA_off}\n')
 
     def stopA_routine(self):
-            global motorA_on, motorA_off
-            motorA_off = 1
-            motorA_on = 0
-            print("stop")
+        global motorA_on, motorA_off
+        motorA_off = 1
+        motorA_on = 0
+        self.textBrowser_2.append(f'motorA_on : {motorA_on}')
+        self.textBrowser_2.append(f'motorA_off : {motorA_off}\n')
 
     def motorA_direction_routine(self):
         global motorA_direction
@@ -40,13 +42,15 @@ class Ui_MainWindow(object):
             motorA_direction = 0 #ccw
         elif self.radioButton_27.isChecked():
             motorA_direction = 1 #cw
-        print(motorA_direction)
+
+        self.textBrowser_2.append(f'motorA_direction : {motorA_direction}\n')
     
     def motorA_dutyCycle_routine(self):
         global motorA_dutyCycle
         motorA_dutyCycle = int(self.horizontalScrollBar_3.value()*65536/100)
-        print(motorA_dutyCycle)
         self.lcdNumber_2.display(int(motorA_dutyCycle/65536*100))
+
+        self.textBrowser_2.append(f'motorA_dutyCycle : {motorA_dutyCycle}\n')
     
     def motorA_presetDutyCycle_routine(self):
         if self.radioButton_22.isChecked():
@@ -59,28 +63,33 @@ class Ui_MainWindow(object):
             motorA_dutyCycle = int(75*65536/100)
         elif self.radioButton_26.isChecked():
             motorA_dutyCycle = 65536 
-        print(motorA_dutyCycle)
+        self.textBrowser_2.append(f'motorA_dutyCycle : {motorA_dutyCycle}\n')
   
 
     def motorA_pwmFreq_routine(self):
         global motorA_pwmFreq
         motorA_pwmFreq = int(self.horizontalScrollBar_4.value()*10)  #SET RANGE PROPERLY pwm() is btw 1 Hz AND 1kHz
-        print(motorA_pwmFreq)
+
+        self.textBrowser_2.append(f'motorA_pwmFreq : {motorA_pwmFreq}\n')
     
     #### FUNCTIONS MOTOR B
         
     def startB_routine(self):
-            global motorB_on, motorB_off
-            if self.radioButton_15.isChecked() or self.radioButton_16.isChecked():
-                motorB_off = 0
-                motorB_on = 1
-                print("start")
+        global motorB_on, motorB_off
+        if self.radioButton_15.isChecked() or self.radioButton_16.isChecked():
+            motorB_off = 0
+            motorB_on = 1
+            
+            self.textBrowser.append(f'motorB_on : {motorB_on}')
+            self.textBrowser.append(f'motorB_off : {motorB_off}\n')
 
     def stopB_routine(self):
-            global motorB_on, motorB_off
-            motorB_off = 1
-            motorB_on = 0
-            print("stop")
+        global motorB_on, motorB_off
+        motorB_off = 1
+        motorB_on = 0
+        
+        self.textBrowser.append(f'motorB_on : {motorB_on}')
+        self.textBrowser.append(f'motorB_off : {motorB_off}\n')
 
     def motorB_direction_routine(self):
         global motorB_direction
@@ -88,13 +97,15 @@ class Ui_MainWindow(object):
             motorB_direction = 0 #ccw
         elif self.radioButton_15.isChecked():
             motorB_direction = 1 #cw
-        print(motorB_direction)
+
+        self.textBrowser.append(f'motorB_direction : {motorB_direction}\n')
     
     def motorB_dutyCycle_routine(self):
         global motorB_dutyCycle
         motorB_dutyCycle = int(self.horizontalScrollBar.value()*65536/100)
-        print(motorB_dutyCycle)
         self.lcdNumber.display(int(motorB_dutyCycle/65536*100))
+
+        self.textBrowser.append(f'motorB_dutyCycle : {motorB_dutyCycle}\n')
     
     def motorB_presetDutyCycle_routine(self):
         if self.radioButton_17.isChecked():
@@ -107,12 +118,13 @@ class Ui_MainWindow(object):
             motorB_dutyCycle = int(75*65536/100)
         elif self.radioButton_21.isChecked():
             motorB_dutyCycle = 65536 
-        print(motorB_dutyCycle)
+        self.textBrowser.append(f'motorB_dutyCycle : {motorB_dutyCycle}\n')
 
     def motorB_pwmFreq_routine(self):
         global motorB_pwmFreq
         motorB_pwmFreq = self.horizontalScrollBar_2.value()   #SET RANGE PROPERLY
-        print(motorB_pwmFreq)
+
+        self.textBrowser.append(f'motorB_pwmFreq : {motorB_pwmFreq}\n')
 
 
     def setupUi(self, MainWindow):
@@ -240,6 +252,8 @@ class Ui_MainWindow(object):
         self.textBrowser_2 = QTextBrowser(self.tab)
         self.textBrowser_2.setObjectName(u"textBrowser_2")
         self.textBrowser_2.setGeometry(QRect(50, 490, 691, 81))
+
+
         ##### MOTOR A FEEDBACK END
 
         ##### MOTOR A LCD
@@ -375,12 +389,6 @@ class Ui_MainWindow(object):
         self.radioButton_24.setText(QCoreApplication.translate("MainWindow", u"50", None))
         self.radioButton_25.setText(QCoreApplication.translate("MainWindow", u"75", None))
         self.radioButton_26.setText(QCoreApplication.translate("MainWindow", u"100", None))
-        self.textBrowser_2.setHtml(QCoreApplication.translate("MainWindow", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">A textbox displays the values sen to Pi Pico for debugging purposes</p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
         self.pushButton_3.setText(QCoreApplication.translate("MainWindow", u"START", None))
         self.groupBox_4.setTitle(QCoreApplication.translate("MainWindow", u"Motor Direction", None))
         self.radioButton_27.setText(QCoreApplication.translate("MainWindow", u"CW", None))
@@ -401,17 +409,9 @@ class Ui_MainWindow(object):
         self.radioButton_20.setText(QCoreApplication.translate("MainWindow", u"75", None))
         self.radioButton_21.setText(QCoreApplication.translate("MainWindow", u"100", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Duty Cycle", None))
-        self.textBrowser.setHtml(QCoreApplication.translate("MainWindow", u"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">A textbox displays the values sen to Pi Pico for debugging purposes</p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"PWM Frequency", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"Motor B", None))
     # retranslateUi
-
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
