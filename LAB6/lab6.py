@@ -2,27 +2,35 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 import sys
+
+from communicate import Serial_Talker # custom defined serial communication class
+
 '''
 5 parameters to be send to pico
 
 single_step : 4bit 
 delay : float
 act_sequence : actuation sequence list
-continuous_mode : 1 or 0
+run_mode : 1-> single 0-> continuous
 stop_mode : 1 or 0
 
 '''
-global i, continuous_mode, stop_mode, delay, act_sequence
 
 i = 0
-continuous_mode = 0
+run_mode = 0
 stop_mode = 0
+
+talker = Serial_Talker() # Initialize serial communication with pico
 
 class Ui_MainWindow(object):
     ### GUI FUNCTIONS
 
+    def send_message(self):
+        global i, run_mode, stop_mode, delay, act_sequence
+        talker.send(f'{i} {run_mode} {stop_mode} {delay} {act_sequence}')
+
     def apply_singleStep(self):
-        global i, single_step, act_sequence
+        global i, run_mode, stop_mode, delay, act_sequence
 
         act_sequence = self.plainTextEdit.toPlainText().splitlines()
         if i < len(act_sequence):
@@ -36,9 +44,11 @@ class Ui_MainWindow(object):
             self.textBrowser.clear()
             self.textBrowser.append(f'{single_step}')
             i += 1
+        
+        self.send_message()
 
     def run_continuousMode(self):
-        global delay, continuous_mode, act_sequence
+        global i, run_mode, stop_mode, delay, act_sequence
         try:
             delay = float(self.textEdit.toPlainText())
         except:
@@ -47,12 +57,17 @@ class Ui_MainWindow(object):
 
         if isinstance(delay, float) and delay < 3000:
             act_sequence = self.plainTextEdit.toPlainText().splitlines()
-            continuous_mode = 1
+            run_mode = 1
             print(delay)
+            print(act_sequence)
+        
+        self.send_message()
 
     def stopAction(self):
-        global stop_mode 
+        global i, run_mode, stop_mode, delay, act_sequence
         stop_mode = 1
+
+        self.send_message()
 
     #### SET UP
         
