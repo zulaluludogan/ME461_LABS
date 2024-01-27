@@ -3,37 +3,51 @@ from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 import sys
 
+from communicate import Serial_Talker # custom defined serial communication class
+
+servo_position = 0 
+release_motor = 1 # yarin yapayim
+
+talker = Serial_Talker() # Initialize serial communication with pico
+
+
 '''
 2 parameters to be send to pico
 
-servo_position: 0-65536 input to analog pin 
+servo_position: 0-65535 input to analog pin 
 release_motor: 0 or 1 motor to be released
 '''
 class Ui_MainWindow(object):
+    def send_message(self):
+        global servo_position, release_motor
+        talker.send(f'{servo_position} {release_motor}')
+
     def preset_servoPosition(self):
         global servo_position
         if self.radioButton.isChecked():
             servo_position = 0 
         elif self.radioButton_2.isChecked():
-            servo_position = int(45*65536/180)
+            servo_position = int(45*65535/180)
         elif self.radioButton_3.isChecked():
-            servo_position = int(90*65536/180)
+            servo_position = int(90*65535/180)
         elif self.radioButton_4.isChecked():
-            servo_position = int(135*65536/180)
+            servo_position = int(135*65535/180)
         elif self.radioButton_5.isChecked():
-            servo_position = int(180*65536/180)
-        print(servo_position)
+            servo_position = int(180*65535/180)
+        self.send_message()
 
     def releaseMotor(self):
         global release_motor
         release_motor = 1
         print(release_motor)
+        self.send_message()
     
     def set_servoPosition(self):
         global servo_position
-        servo_position = int(self.horizontalSlider.value()*65536/100)
-        self.lcdNumber.display(int(servo_position/65536*180))
+        servo_position = int(self.horizontalSlider.value()*65535/100)
+        self.lcdNumber.display(int(servo_position/65535*180))
         print(servo_position)
+        self.send_message()
 
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
