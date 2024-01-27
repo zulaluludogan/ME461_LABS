@@ -27,11 +27,13 @@ class Ui_MainWindow(object):
         act_sequence = self.plainTextEdit.toPlainText().splitlines()
         if i < len(act_sequence):
             single_step = act_sequence[i]
+            self.textBrowser.clear()
             self.textBrowser.append(f'{single_step}')
             i += 1
         else:
             i = 0
             single_step = act_sequence[i]
+            self.textBrowser.clear()
             self.textBrowser.append(f'{single_step}')
             i += 1
 
