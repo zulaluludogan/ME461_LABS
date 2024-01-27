@@ -8,7 +8,7 @@ from communicate import Serial_Talker # custom defined serial communication clas
 '''
 5 parameters to be send to pico
 
-single_step : 4bit 
+i: the step index to apply single step
 delay : float
 act_sequence : actuation sequence list
 run_mode : 1-> single 0-> continuous
@@ -33,6 +33,7 @@ class Ui_MainWindow(object):
         global i, run_mode, stop_mode, delay, act_sequence
 
         act_sequence = self.plainTextEdit.toPlainText().splitlines()
+
         if i < len(act_sequence):
             single_step = act_sequence[i]
             self.textBrowser.clear()
