@@ -2,10 +2,10 @@ import time
 import sys
 from machine import PWM, Pin, ADC
 
-coil1 = Pin(10,Pin.OUT)
-coil2 = Pin(11,Pin.OUT)
-coil3 = Pin(12,Pin.OUT)
-coil4 = Pin(13,Pin.OUT)
+coil1 = Pin(19,Pin.OUT)
+coil2 = Pin(18,Pin.OUT)
+coil3 = Pin(17,Pin.OUT)
+coil4 = Pin(16,Pin.OUT)
 
 pins = [coil1, coil2, coil3, coil4]
 
