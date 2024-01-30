@@ -1,5 +1,6 @@
 import sys
 from communicate import Serial_Talker # custom defined serial communication class
+import serial
 
 # Libraries necessary for the GUI
 from PySide2.QtCore import *
@@ -13,12 +14,10 @@ motorA_dutyCycle = 0  # initially 0, dutyCycle integer [0, 65535]
 motorA_pwmFreq = 50   # initially 50, dutyCycle integer [1, 1000]
 
 # Motor B state variables
-motorB_state = 0      # 0 -> off , 1 -> on
-motorB_direction = -1 # -1 -> not defined, 0 -> ccw, 1 -> cw  
-motorB_dutyCycle = 0  # initially 0, dutyCycle integer [0, 65535]
-motorB_pwmFreq = 50   # initially 50, dutyCycle integer [1, 1000]
-
-talker = Serial_Talker() # Initialize serial communication with pico
+motorB_state = 0    
+motorB_direction = 0   
+motorB_dutyCycle = 0  
+motorB_pwmFreq = 50 
 
 '''
 Parameters to be send to pico
@@ -32,21 +31,29 @@ motorB_state : 1 or 0
 motorB_direction : 1 (cw) or 0(ccw)
 motorB_dutyCycle : 0 to 65535
 motorB_pwmFreq : 1 Hz to 1kHz
+
+Communication Protocol: "<motor number> <motor state(on/off)> <motor direction> <motor dutycycle> <motor pwmfreq>"
 '''
 
 class Ui_MainWindow(object):
 
     def send_message_A(self):
+        '''
+        sends data packet over serial to pico
+        '''
         global motorA_state, motorA_direction, motorA_dutyCycle, motorA_pwmFreq
         talker.send(f'0 {motorA_state} {motorA_direction} {motorA_dutyCycle} {motorA_pwmFreq}')
     
-    ### FIX THIS KLATER
+    # same as above but for motor B
     def send_message_B(self):
         global motorB_state, motorB_direction, motorB_dutyCycle, motorB_pwmFreq
         talker.send(f'1 {motorB_state} {motorB_direction} {motorB_dutyCycle} {motorB_pwmFreq}')
 
     #### FUNCTIONS MOTOR A
     def startA_routine(self):
+        '''
+        sets motor state to active and sends necessary info to pico
+        '''
         global motorA_state, motorA_direction, motorA_dutyCycle, motorA_pwmFreq
         motorA_state = 1
         self.textBrowser_2.append(f'motorA_state : {motorA_state}')
@@ -54,6 +61,9 @@ class Ui_MainWindow(object):
         self.send_message_A()
 
     def stopA_routine(self):
+        '''
+        sets motor state to unactive and sends necessary info to pico
+        '''
         global motorA_state, motorA_direction, motorA_dutyCycle, motorA_pwmFreq
         motorA_state = 0
         self.textBrowser_2.append(f'motorA_state : {motorA_state}')
@@ -61,6 +71,9 @@ class Ui_MainWindow(object):
         self.send_message_A()
 
     def motorA_direction_routine(self):
+        '''
+        sets motor direction and sends necessary info to pico
+        '''
         global motorA_state, motorA_direction, motorA_dutyCycle, motorA_pwmFreq
         if self.radioButton_28.isChecked():
             motorA_direction = 0 #ccw
@@ -72,6 +85,9 @@ class Ui_MainWindow(object):
         self.send_message_A()
     
     def motorA_dutyCycle_routine(self):
+        '''
+        sets motor duty cycle and sends necessary info to pico
+        '''
         global motorA_state, motorA_direction, motorA_dutyCycle, motorA_pwmFreq
         motorA_dutyCycle = int(self.horizontalScrollBar_3.value()*65535/100)
         self.lcdNumber_2.display(int(motorA_dutyCycle/65535*100))
@@ -81,12 +97,15 @@ class Ui_MainWindow(object):
         self.send_message_A()
     
     def motorA_presetDutyCycle_routine(self):
+        '''
+        sets motor duty cycle and sends necessary info to pico
+        '''
         global motorA_state, motorA_direction, motorA_dutyCycle, motorA_pwmFreq
         if not motorA_state: 
             if self.radioButton_22.isChecked():
                 motorA_dutyCycle = 0
             elif self.radioButton_23.isChecked():
-                motorA_dutyCycle = int(25*65535/100)
+                motorA_dutyCycle = int(25*65535/100) # do all calculation here and not on pico 
             elif self.radioButton_24.isChecked():
                 motorA_dutyCycle = int(50*65535/100)
             elif self.radioButton_25.isChecked():
@@ -98,14 +117,15 @@ class Ui_MainWindow(object):
             self.send_message_A()
 
     def motorA_pwmFreq_routine(self):
+        '''
+        sets motor pwm freqeuncy and sends necessary info to pico
+        '''
         global motorA_state, motorA_direction, motorA_dutyCycle, motorA_pwmFreq
-        motorA_pwmFreq = int(self.horizontalScrollBar_4.value()*10)  #SET RANGE PROPERLY pwm() is btw 1 Hz AND 1kHz
+        motorA_pwmFreq = int(self.horizontalScrollBar_4.value()*99.9+10)  #SET RANGE PROPERLY pwm() is btw 10 Hz AND 999 kHz
 
         self.textBrowser_2.append(f'motorA_pwmFreq : {motorA_pwmFreq}\n')
+        self.send_message_A()
 
-        message = f'A{motorA_state}{motorA_direction}D{motorA_dutyCycle}F{motorA_pwmFreq}'
-        talker.send(message)
-    
     #### FUNCTIONS MOTOR B
         
     def startB_routine(self):
@@ -160,7 +180,7 @@ class Ui_MainWindow(object):
 
     def motorB_pwmFreq_routine(self):
         global motorB_state, motorB_direction, motorB_dutyCycle, motorB_pwmFreq 
-        motorB_pwmFreq = self.horizontalScrollBar_2.value()   #SET RANGE PROPERLY
+        motorB_pwmFreq = int(self.horizontalScrollBar_2.value() *99.9+10)
 
         self.textBrowser.append(f'motorB_pwmFreq : {motorB_pwmFreq}\n')
 
@@ -168,7 +188,7 @@ class Ui_MainWindow(object):
 
     def setupUi(self, MainWindow):
 
-        if not MainWindow.objectName():
+        if not MainWindow.objectName(): 
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(790, 665)
         self.centralwidget = QWidget(MainWindow)
@@ -453,14 +473,24 @@ class Ui_MainWindow(object):
     # retranslateUi
 
 if __name__ == "__main__":
+    try:
+        talker = Serial_Talker() # Initialize serial communication with pico
+    except FileNotFoundError:
+        print("Please Make Sure pico is connected")
+        sys.exit()
+    except serial.SerialException:
+        print("Please Make Sure pico is connected")
+        sys.exit()
+    # GUI STUFF
     app = QApplication(sys.argv)
     window = QMainWindow()
     gui = Ui_MainWindow()
     gui.setupUi(window)
 
-
     window.show()
-  
-    sys.exit(app.exec_())
+
+    app.exec_()
+    talker.close()
+    sys.exit()
 
     

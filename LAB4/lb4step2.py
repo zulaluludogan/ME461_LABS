@@ -2,7 +2,7 @@ import time
 import rp2
 from machine import PWM, Pin, ADC
 
-direction = 0
+direction = 0 # 0 -> not initiliazed, 1 -> cw, 2-> ccw
 
 ##### PIN DEFINITIONS
 motorA = Pin(19, Pin.OUT)
@@ -11,13 +11,16 @@ motorB = Pin(18, Pin.OUT)
 motorA_pwm = PWM((motorA), freq=50, duty_u16=0)
 motorB_pwm = PWM((motorB), freq=50, duty_u16=0)
 
-pot = ADC(26)
+pot = ADC(26) # potentiometer pin
 
 # motorA.off()
 # motorB.off()
 
 
 ##### BUTTON ISRs
+
+# note that we are doing hardware debouncing
+
 # button R MotorB
 # button L MotorA
 def isr_buttonL(pin):

@@ -1,0 +1,11 @@
+Increasing the pwm frequency has two main effects:
+
+1- If the motor is already spinning, then the motor slows down
+as the pwm frequency is increased. This is because a motor is just an inductor,
+and an inductor's current doesnt cannot changes instantly. Since the pwm frequeny 
+is higher the inductor sees a nonzero voltage for a shorter period of time which
+means that it cannot build up its magnetic field enough to rotate the motor 
+at the same speed.
+
+2- If the motor is at rest, then a higher pwm frequency is required to start the
+motor for the afromentioned reasons. 
