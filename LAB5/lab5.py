@@ -2,11 +2,12 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 import sys
+import serial
 
 from communicate import Serial_Talker # custom defined serial communication class
 
 servo_position = 0 
-release_motor = 1 # yarin yapayim
+release_motor = 0 
 
 talker = Serial_Talker() # Initialize serial communication with pico
 
@@ -23,7 +24,8 @@ class Ui_MainWindow(object):
         talker.send(f'{servo_position} {release_motor}')
 
     def preset_servoPosition(self):
-        global servo_position
+        global servo_position, release_motor
+        release_motor = 0
         if self.radioButton.isChecked():
             servo_position = 0 
         elif self.radioButton_2.isChecked():
@@ -43,7 +45,8 @@ class Ui_MainWindow(object):
         self.send_message()
     
     def set_servoPosition(self):
-        global servo_position
+        global servo_position, release_motor
+        release_motor = 0
         servo_position = int(self.horizontalSlider.value()*65535/100)
         self.lcdNumber.display(int(servo_position/65535*180))
         print(servo_position)
@@ -135,11 +138,22 @@ class Ui_MainWindow(object):
 
 
 if __name__ == "__main__":
+
+    try:
+        talker = Serial_Talker() # Initialize serial communication with pico
+    except FileNotFoundError:
+        print("Please Make Sure pico is connected")
+        sys.exit()
+    except serial.SerialException:
+        print("Please Make Sure pico is connected")
+        sys.exit()
+    
     app = QApplication(sys.argv)
     window = QMainWindow()
     gui = Ui_MainWindow()
     gui.setupUi(window)
 
     window.show()
-
-    sys.exit(app.exec_())
+    app.exec_()
+    Serial_Talker.close()
+    sys.exit()
