@@ -1,0 +1,32 @@
+import time
+import sys
+from machine import PWM, Pin, ADC
+
+coil1 = Pin(10,Pin.OUT)
+coil2 = Pin(11,Pin.OUT)
+coil3 = Pin(14,Pin.OUT)
+coil4 = Pin(15,Pin.OUT)
+
+pins = [coil1, coil2, coil3, coil4]
+act_sequence = [[1,0,0,0],[1,1,0,0],
+                [0,1,0,0],[0,1,1,0],
+                [0,0,1,0],[0,0,1,1],
+                [0,0,0,1],[1,0,0,1]]
+delay = 500
+
+if __name__ == "__main__":
+    for i in range(512): # each act sequence has 8 steps
+         for step in act_sequence:
+            for j in range(len(pins)):
+                pins[j].value(step[j]) 
+                time.sleep_us(delay)
+    
+    # remember that this is an 8 coil motor
+    # so we have according to the datasheet
+    # 64 * 64 = 4096 steps per revolution
+    # to measure the actual gear ratio however,
+    # we can apply 4096 steps but then measure the
+    # extra angle difference and divide by 64 to get
+    # the actual gear ratio
+
+
